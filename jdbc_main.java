@@ -23,9 +23,6 @@ public class jdbc_main {
         test.connect(Username, mysqlPassword);
         test.initDatabase(Username, mysqlPassword, Username);
 
-        // Scanner
-        Scanner sc = new Scanner(System.in);
-
         scan: while (true) {
             // Show GUI
             System.out.println("Input a number corrosponding to the functionality to be used.");
@@ -127,8 +124,6 @@ public class jdbc_main {
             }
 
         }
-
-        sc.close();
         test.disConnect();
     }
 
