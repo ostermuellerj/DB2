@@ -94,11 +94,29 @@ public class jdbc_main {
                     System.out.print("Agent_ID: ");
                     String agentID = sc.nextLine();
                     
-                    //CLIENT ID NEEDS TO BE INSERTED
+                    //Insert new policy that was sold and increment purchaseID
                     insert("POLICIES_SOLD (PURCHASE_ID, AGENT_ID, CLIENT_ID, POLICY_ID, DATE_PURCHASED, AMOUNT)", ++purchaseID_MAX + "," + agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
 
                     break;
-                case "3": //list all policies sold by a particular agent 
+                case "3": //list all policies sold by a particular agent
+                    System.out.println("Search for an Agent:");
+                    System.out.println("Enter Agents name: ");
+                    String aName = sc.nextLine();
+                    System.out.println("Enter Agent's City: ");
+                    String city3 = sc.nextLine();
+
+                    String query3 = "SELECT A_NAME FROM AGENTS WHERE A_NAME = '"+ aName.toUpperCase() +"' AND A_CITY='" + city3.toUpperCase() + "'";
+                    ResultSet agentCheck = statement.executeQuery(query3);
+                    //Go to first row of table
+                    boolean validAgent = agentCheck.first();
+
+                    if(!validAgent){
+                        System.out.println("Agent or City is invalid. Returning to menu.");
+                        break;
+                    }
+
+                    showAgentInfo(test, aName);
+
                     break;
                 case "4":
                     //showPoliciesSold(test);
@@ -116,7 +134,8 @@ public class jdbc_main {
                     String a_city = sc.nextLine();
                     System.out.print("Agent's zip: ");
                     String a_zip = sc.nextLine();
-                    //addAgent(test, a_id, a_name, a_city, a_zip);
+
+                    addAgent(test, a_id, a_name, a_city, a_zip);
                     break;
                 case "6":
                     break scan;
@@ -198,6 +217,22 @@ public class jdbc_main {
     // Case 3
     // List all policies sold by a particular agent
     // Variables
+    public static void showAgentInfo(jdbc_main jd, String aName){
+        System.out.println("-----------AGENTS POLICIES-----------");
+        String showPoliciesforAgent = "SELECT *" + 
+        "FROM AGENTS" +
+        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID" +
+        "WHERE AGENTS.A_NAME = '" + aName.toUpperCase() + "'";
+        jd.query(showPoliciesforAgent);
+
+        System.out.println("-----------POLICY DATA-----------");
+        String showAllInfoAgent = "SELECT POLICY.NAME, POLICY.TYPE, POLICY.COMMISSION_PERCENTAGE" +
+        "FROM AGENTS" +
+        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID" +
+        "INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID" +
+        "WHERE AGENTS.A_NAME = '" + aName.toUpperCase() + "'";
+        jd.query(showAllInfoAgent);
+    }
 
     // Case 4
     // Cancel a policy
