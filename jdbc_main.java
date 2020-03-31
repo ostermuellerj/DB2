@@ -37,27 +37,20 @@ public class jdbc_main {
             System.out.println("6) Quit");
 
             // Get input
-            String input = sc.nextLine();
+            String input = input("Input a number: ");
 
             // Switch
             switch (input) {
                 case "1":
-                    System.out.println("Please input a city to search for");
-                    String city1 = sc.nextLine();
+                    String city1 = input("Please input a city to search for: ");
                     getAgentClient(test, city1);
                     break;
                 case "2":
                     //Info for client
                     System.out.println("Enter the following variables:");
-                    System.out.print("Name: ");
-                    String name = sc.nextLine();
-                    System.out.print("City: ");
-                    String city2 = sc.nextLine();
-                    System.out.print("Zip: ");
-                    String zip = sc.nextLine();
-                    //to uppercase for consistency
-                    name = name.toUpperCase();
-                    city2 = city2.toUpperCase();
+                    String name = input("Name: ");
+                    String city2 = input("City: ");
+                    String zip = input("Zip: ");
 
                     //Get Client ID //Check to see if already created
                     //-1 if not in table, else in table
@@ -71,10 +64,9 @@ public class jdbc_main {
                     }
 
                     //Check Type in table
-                    System.out.print("Enter a type of policy: ");
-                    String policy_type = sc.nextLine();
+                    String policy_type = input("Enter a type of policy: ");
                     //Make Query to check for type
-                    String queryCheck = "SELECT * FROM POLICY WHERE TYPE = '" + policy_type.toUpperCase() + "'";
+                    String queryCheck = "SELECT * FROM POLICY WHERE TYPE = '" + policy_type + "'";
                     ResultSet check = statement.executeQuery(queryCheck);
                     boolean isValid = check.first();
 
@@ -85,14 +77,12 @@ public class jdbc_main {
                         System.out.println("TYPE of policy not found. Returning");
                         break;
                     }
+
                     //Purchase
                     System.out.println("Enter the following variables for your purchase:");
-                    System.out.print("Policy_ID: ");
-                    String policyID = sc.nextLine();
-                    System.out.print("Amount: ");
-                    String amount = sc.nextLine();
-                    System.out.print("Agent_ID: ");
-                    String agentID = sc.nextLine();
+                    String policyID = input("Policy_ID: ")
+                    String amount = input("Amount: ");
+                    String agentID = input("Agent_ID: ")
                     
                     //Insert new policy that was sold and increment purchaseID
                     insert("POLICIES_SOLD (PURCHASE_ID, AGENT_ID, CLIENT_ID, POLICY_ID, DATE_PURCHASED, AMOUNT)", ++purchaseID_MAX + "," + agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
@@ -100,12 +90,10 @@ public class jdbc_main {
                     break;
                 case "3": //list all policies sold by a particular agent
                     System.out.println("Search for an Agent:");
-                    System.out.println("Enter Agents name: ");
-                    String aName = sc.nextLine();
-                    System.out.println("Enter Agent's City: ");
-                    String city3 = sc.nextLine();
+                    String aName = input("Enter Agents name: ");
+                    String city3 = input("Enter Agent's City: ");
 
-                    String query3 = "SELECT A_NAME FROM AGENTS WHERE A_NAME = '"+ aName.toUpperCase() +"' AND A_CITY='" + city3.toUpperCase() + "'";
+                    String query3 = "SELECT A_NAME FROM AGENTS WHERE A_NAME = '"+ aName +"' AND A_CITY='" + city3) + "'";
                     ResultSet agentCheck = statement.executeQuery(query3);
                     //Go to first row of table
                     boolean validAgent = agentCheck.first();
@@ -120,20 +108,15 @@ public class jdbc_main {
                     break;
                 case "4":
                     //showPoliciesSold(test);
-                    System.out.println("Enter the purchase ID of the policy you wish to cancel:");
-                    String purchase_id = sc.nextLine();
+                    String purchase_id = inputLine("Enter the purchase ID of the policy you wish to cancel:");
                     cancelPolicy(purchase_id);
                     break;
                 case "5": //Prompt the user for the (A_ID, A_NAME, A_CITY, A_ZIP) of the new agent.
                     System.out.println("Please enter the necessary information for the new agent:");
-                    System.out.print("Agent ID: ");
-                    String a_id = sc.nextLine();
-                    System.out.print("Agent's name: ");
-                    String a_name = sc.nextLine();
-                    System.out.print("Agent's city: ");
-                    String a_city = sc.nextLine();
-                    System.out.print("Agent's zip: ");
-                    String a_zip = sc.nextLine();
+                    String a_id = input("Agent ID: ");
+                    String a_name = input("Agent's name: ");
+                    String a_city = input("Agent's city: ");
+                    String a_zip = input("Agent's zip: ");
 
                     addAgent(test, a_id, a_name, a_city, a_zip);
                     break;
@@ -149,12 +132,28 @@ public class jdbc_main {
         test.disConnect();
     }
 
+    public static String input(String s){
+        Scanner sc = new Scanner(System.in);
+        System.out.print(s);
+        String var = sc.nextLine();
+        sc.close();
+        return var.toUpperCase();
+    }
+
+    public static String inputLine(String s){
+        Scanner sc = new Scanner(System.in);
+        System.out.println(s);
+        String var = sc.nextLine();
+        sc.close();
+        return var.toUpperCase();
+    }
+
     // Case 1
     // Find all Agents and Clients in City
     // Variables: city
     public static void getAgentClient(jdbc_main jd, String city) {
-        String agents = "SELECT * FROM AGENTS WHERE A_CITY = " + "\'" + city.toUpperCase() + "\'";
-        String clients = "SELECT * FROM CLIENTS WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
+        String agents = "SELECT * FROM AGENTS WHERE A_CITY = " + "\'" + city + "\'";
+        String clients = "SELECT * FROM CLIENTS WHERE C_CITY = " + "\'" + city + "\'";
         System.out.println("-------------AGENTS-------------");
         jd.query(agents);
         System.out.println("-------------CLIENTS------------");
@@ -167,18 +166,19 @@ public class jdbc_main {
     //            name, city
     public static void showAgentsPolicies(jdbc_main jd, String city, String type){
         //Agents
-        String agents = "SELECT * FROM AGENTS WHERE A_CITY = '" + city.toUpperCase() + "'";
-        System.out.println("-------------AGENTS-------------");
+        System.out.println("--------------AGENTS-------------");
+        String agents = "SELECT * FROM AGENTS WHERE A_CITY = '" + city + "'";
         jd.query(agents);
         //Policies
-        String policies = "SELECT * FROM POLICY WHERE TYPE = '" + type.toUpperCase() + "'";
-        System.out.println("------------POLICIES------------");
+
+        System.out.println("-------------POLICIES-------------");
+        String policies = "SELECT * FROM POLICY WHERE TYPE = '" + type + "'";
         jd.query(policies);
     }
   
     public static int getClientID(jdbc_main jd, String name, String city) throws SQLException{
         //Will return -1 if not found
-        String find = "SELECT * FROM CLIENTS WHERE C_CITY = '" + city.toUpperCase() + "' AND C_NAME = '" + name.toUpperCase() + "'";
+        String find = "SELECT * FROM CLIENTS WHERE C_CITY = '" + city + "' AND C_NAME = '" + name + "'";
         System.out.println("FINDING CLIENT WITH SQL: " + find);
 
         ResultSet check = statement.executeQuery(find);
@@ -219,18 +219,18 @@ public class jdbc_main {
     // Variables
     public static void showAgentInfo(jdbc_main jd, String aName){
         System.out.println("-----------AGENTS POLICIES-----------");
-        String showPoliciesforAgent = "SELECT *" + 
-        "FROM AGENTS" +
-        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID" +
-        "WHERE AGENTS.A_NAME = '" + aName.toUpperCase() + "'";
+        String showPoliciesforAgent = "SELECT * " + 
+        "FROM AGENTS " +
+        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID " +
+        "WHERE AGENTS.A_NAME = '" + aName + "'";
         jd.query(showPoliciesforAgent);
 
         System.out.println("-----------POLICY DATA-----------");
-        String showAllInfoAgent = "SELECT POLICY.NAME, POLICY.TYPE, POLICY.COMMISSION_PERCENTAGE" +
-        "FROM AGENTS" +
-        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID" +
-        "INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID" +
-        "WHERE AGENTS.A_NAME = '" + aName.toUpperCase() + "'";
+        String showAllInfoAgent = "SELECT POLICY.NAME, POLICY.TYPE, POLICY.COMMISSION_PERCENTAGE " +
+        "FROM AGENTS " +
+        "INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID " +
+        "INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID " +
+        "WHERE AGENTS.A_NAME = '" + aName + "'";
         jd.query(showAllInfoAgent);
     }
 
@@ -242,8 +242,9 @@ public class jdbc_main {
         System.out.println("-----------POLICIES SOLD-----------");
         jd.query("SELECT * FROM POLICIES_SOLD");
     }
+
     public static void cancelPolicy(String purchase_id) {
-        String del = "DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID="+purchase_id;
+        String del = "DELETE FROM POLICIES_SOLD WHERE PURCHASE_ID="+purchase_id;
         try {
             statement.executeUpdate(del);
         } catch (SQLException e) {
@@ -257,7 +258,6 @@ public class jdbc_main {
     // Variables: a_id, a_name, a_city, a_zip
     public static void addAgent(jdbc_main jd, String a_id, String a_name, String a_city, String a_zip) {
         insert("AGENTS", a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip);
-        System.out.println("Agent " + a_id + " has been added.");
         jd.query("SELECT * FROM AGENTS WHERE A_CITY='" + a_city + "'");
     }
 
