@@ -141,7 +141,7 @@ public class jdbc_main {
     // Cancel a policy
     // Variables: none
     public static void showPoliciesSold(jdbc_main jd) {
-        System.out.println("-------------POLICIES SOLD-------------");
+        System.out.println("-----------POLICIES SOLD-----------");
         jd.query(" SELECT * FROM POLICIES_SOLD");
     }
     public static void cancelPolicy(jdbc_main jd, String purchase_id) {
