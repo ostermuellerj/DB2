@@ -11,17 +11,44 @@ WHERE C_CITY = "[city]";
 
 2.
 need name, city, zip
+//figure out unique client id (prevent duplicate adds[in java] before insert[in sql])
 INSERT INTO CLIENTS (C_NAME, C_CITY, C_ZIP)
 VALUES ( '[name]', '[city]', [zip] );
 
 need type
 SELECT * FROM POLICY
-WHERE TYPE = '[type];
+WHERE TYPE = '[type]';
 
-if result != "Empty set" then
-	
-	(query for: display the available agent of clientâ€™s city, then list all available policy)
+if the above query has contents, then proceed 
+	SELECT * 
+	FROM AGENTS
+	WHERE A_CITY = '[city]';
 
-	need policy_id and amount
+	SELECT * 
+	FROM POLICY
+	WHERE TYPE = '[type]';
 
-	(query for: Add the PURCHASE_ID, AGENT_ID, CLIENT_ID, POLICY_ID, DATA_PURCHASED and AMOUNT POLICIES_SOLD table.)
+	need policy_id, amount, agent_id
+	***special get: client_id, date_purchased
+	//figure out: get date purchased
+
+	INSERT INTO POLICIES_SOLD (AGENT_ID, CLIENT_ID, POLICY_ID, DATE_PURCHASED, AMOUNT)
+	VALUES ( '[agent_id]', '[client_id]', '[policy_id]', '[date_purchased]', '[amount]' );
+
+3.
+need a_name, city
+SELECT A_NAME 
+FROM AGENTS 
+WHERE A_NAME = '[a_name]' AND A_CITY='[a_city]';
+
+if the above query has contents, then proceed 
+	SELECT *
+	FROM AGENTS
+	INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID
+	WHERE AGENTS.A_NAME = 'ANDREW';
+
+	SELECT POLICY.NAME, POLICY.TYPE, POLICY.COMMISSION_PERCENTAGE
+	FROM AGENTS
+	INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID
+	INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID
+	WHERE AGENTS.A_NAME = 'ANDREW';
