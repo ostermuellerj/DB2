@@ -194,17 +194,11 @@ public class jdbc_main {
         System.out.println("Policy " + purchase_id + " has been cancelled.");
     }
 
-
     // Case 5
     // Add a new agent with given info, then show other agents in that city
     // Variables: a_id, a_name, a_city, a_zip
     public static void addAgent(jdbc_main jd, String a_id, String a_name, String a_city, String a_zip) {
-        String add = "INSERT INTO AGENTS VALUES ( " + a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip + ")";
-        try {
-            statement.executeUpdate(add);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        insert("AGENTS", a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip);
         System.out.println("Agent " + a_id + " has been added.");
         jd.query("SELECT * FROM AGENTS WHERE A_CITY='" + a_city + "'");
     }
