@@ -81,7 +81,7 @@ public class jdbc_main {
                     insert("POLICIES_SOLD", agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
 
                     break;
-                case "3":
+                case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
                     break;

@@ -1,0 +1,71 @@
+1.
+need city 
+
+SELECT *
+FROM AGENTS
+WHERE A_CITY = "[city]";
+
+SELECT *
+FROM CLIENTS
+WHERE C_CITY = "[city]";
+
+2.
+need name, city, zip
+//figure out unique client id (prevent duplicate adds[in java] before insert[in sql])
+INSERT INTO CLIENTS (C_NAME, C_CITY, C_ZIP)
+VALUES ( '[name]', '[city]', [zip] );
+
+need type
+SELECT * FROM POLICY
+WHERE TYPE = '[type]';
+
+if the above query has contents, then proceed 
+	SELECT * 
+	FROM AGENTS
+	WHERE A_CITY = '[city]';
+
+	SELECT * 
+	FROM POLICY
+	WHERE TYPE = '[type]';
+
+	need policy_id, amount, agent_id
+	***special get: client_id, date_purchased
+	//figure out: get date purchased
+
+	INSERT INTO POLICIES_SOLD (AGENT_ID, CLIENT_ID, POLICY_ID, DATE_PURCHASED, AMOUNT)
+	VALUES ( '[agent_id]', '[client_id]', '[policy_id]', '[date_purchased]', '[amount]' );
+
+3.
+need a_name, city
+SELECT A_NAME 
+FROM AGENTS 
+WHERE A_NAME = '[a_name]' AND A_CITY='[a_city]';
+
+if the above query has contents, then proceed 
+	SELECT *
+	FROM AGENTS
+	INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID
+	WHERE AGENTS.A_NAME = 'ANDREW';
+
+	SELECT POLICY.NAME, POLICY.TYPE, POLICY.COMMISSION_PERCENTAGE
+	FROM AGENTS
+	INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID
+	INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID
+	WHERE AGENTS.A_NAME = 'ANDREW';
+
+4.
+SELECT *
+FROM POLICIES_SOLD;
+
+need purchase_id
+
+DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID=purchase_id;
+
+5.
+need a_id, a_name, a_city, a_zip
+
+INSERT INTO AGENTS VALUES ( [a_id], '[a_name]', '[a_city]', [a_zip]);
+
+SELECT *
+FROM AGENTS
+WHERE A_CITY='[a_city]';
