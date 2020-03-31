@@ -139,7 +139,7 @@ public class jdbc_main {
         String clients = "SELECT * FROM CLIENTS WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
         System.out.println("-------------AGENTS-------------");
         jd.query(agents);
-        System.out.println("-------------CLIENTS-------------");
+        System.out.println("-------------CLIENTS------------");
         jd.query(clients);
     }
 
@@ -154,7 +154,7 @@ public class jdbc_main {
         jd.query(agents);
         //Policies
         String policies = "SELECT * FROM POLICY WHERE TYPE = '" + type.toUpperCase() + "'";
-        System.out.println("-------------POLICIES-------------");
+        System.out.println("------------POLICIES------------");
         jd.query(policies);
     }
   
@@ -220,18 +220,18 @@ public class jdbc_main {
     }
 
 
-    // // Connect to the database
-    // public void connect(String Username, String mysqlPassword) throws SQLException {
-    //     try {
-    //         connection = DriverManager.getConnection(
-    //                 "jdbc:mysql://localhost/" + Username + "?" + "user=" + Username + "&password=" + mysqlPassword);
-    //         // connection = DriverManager.getConnection("jdbc:mysql://localhost/" + Username
-    //         // +
-    //         // "?user=" + Username + "&password=" + mysqlPassword);
-    //     } catch (Exception e) {
-    //         throw e;
-    //     }
-    // }
+    // Connect to the database
+    public void connect(String Username, String mysqlPassword) throws SQLException {
+        try {
+            connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost/" + Username + "?" + "user=" + Username + "&password=" + mysqlPassword);
+            // connection = DriverManager.getConnection("jdbc:mysql://localhost/" + Username
+            // +
+            // "?user=" + Username + "&password=" + mysqlPassword);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     // Disconnect from the database
     public void disConnect() throws SQLException {
