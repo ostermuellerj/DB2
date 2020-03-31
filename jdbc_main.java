@@ -6,6 +6,7 @@ public class jdbc_main {
     // The instance variables for the class
     private static Connection connection;
     private static Statement statement;
+    private static int clientID_MAX;
 
     // The constructor for the class
     public jdbc_main() {
@@ -54,30 +55,38 @@ public class jdbc_main {
                     String city2 = sc.nextLine();
                     System.out.print("Zip: ");
                     String zip = sc.nextLine();
+                    //to uppercase for consistency
+                    name = name.toUpperCase();
+                    city2 = city2.toUpperCase();
 
-                    //Get Client ID
-                    String clientID = Integer.toString(getClientID(test, name, city2));
-                    //Check to see if already created
-                    if (clientID == "-1"){
+                    //Get Client ID //Check to see if already created
+                    //-1 if not in table, else in table
+                    int clientID = getClientID(test, name, city2);
+                    System.out.println("clientID: " + clientID);
+                    //If not in table create a new one
+                    if (clientID == -1){
                         //Inserts into Clients
-                        insert("CLIENTS", name + "," + city2 + "," + zip);
+                        insert("CLIENTS (C_ID, C_NAME, C_CITY, C_ZIP)", clientID_MAX++ + ",'" + name + "','" + city2 + "'," + zip);
                         //update ClientID
-                        clientID = Integer.toString(getClientID(test, name, city2));
+                        clientID = getClientID(test, name, city2);
+                        System.out.println("clientID2 : " + clientID);
                     }
 
                     //Check Type in table
                     System.out.print("Enter a type of policy: ");
                     String policy_type = sc.nextLine();
+                    //Make Query to check for type
                     String queryCheck = "SELECT * FROM POLICY WHERE TYPE = '" + policy_type.toUpperCase() + "'";
                     ResultSet check = statement.executeQuery(queryCheck);
-                    String is_type = check.getString("TYPE");
-                    if(is_type == null){
-                        System.out.print("Type not found, Exiting");
+                    boolean isValid = check.first();
+
+                    if(isValid){
+                        //display agents of city and list policies
+                        showAgentsPolicies(test, city2, policy_type);
+                    } else {
+                        System.out.println("TYPE of policy not found. Returning")
                         break;
                     }
-
-                    //display agents of city and list policies
-                    showAgentsPolicies(test, city2, policy_type);
                     //Purchase
                     System.out.println("Enter the following variables for your purchase:");
                     System.out.print("Policy_ID: ");
@@ -113,8 +122,8 @@ public class jdbc_main {
     // Find all Agents and Clients in City
     // Variables: City
     public static void getAgentClient(jdbc_main jd, String city) {
-        String agents = "SELECT * " + "FROM AGENTS " + "WHERE A_CITY = " + "\'" + city.toUpperCase() + "\'";
-        String clients = "SELECT * " + "FROM CLIENTS " + "WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
+        String agents = "SELECT * FROM AGENTS WHERE A_CITY = " + "\'" + city.toUpperCase() + "\'";
+        String clients = "SELECT * FROM CLIENTS WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
         System.out.println("-------------AGENTS-------------");
         jd.query(agents);
         System.out.println("-------------CLIENTS-------------");
@@ -138,13 +147,14 @@ public class jdbc_main {
     public static int getClientID(jdbc_main jd, String name, String city) throws SQLException{
         //Will return -1 if not found
         String find = "SELECT * FROM CLIENTS WHERE C_CITY = '" + city.toUpperCase() + "' AND C_NAME = '" + name.toUpperCase() + "'";
+        System.out.println("FINDING CLIENT WITH SQL: " + find);
+
         ResultSet check = statement.executeQuery(find);
-        int clientID = check.getInt("C_ID");
-        if (clientID == 0){
-            return -1;
-        } else {
-            return clientID;
-        }
+        //Go to first row of table
+        check.first();
+
+        //Find the ClientID, if in the table use it
+        // if not in the table make a new one using the global variable
     }
 
     // Case 3
