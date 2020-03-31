@@ -6,6 +6,7 @@ public class jdbc_main {
     private static Connection connection;
     private static Statement statement;
     private static int clientID_MAX;
+    private static int purchaseID_MAX;
 
     // The constructor for the class
     public jdbc_main() {
@@ -61,14 +62,12 @@ public class jdbc_main {
                     //Get Client ID //Check to see if already created
                     //-1 if not in table, else in table
                     int clientID = getClientID(test, name, city2);
-                    System.out.println("clientID: " + clientID);
                     //If not in table create a new one
                     if (clientID == -1){
                         //Inserts into Clients
-                        insert("CLIENTS (C_ID, C_NAME, C_CITY, C_ZIP)", clientID_MAX++ + ",'" + name + "','" + city2 + "'," + zip);
+                        insert("CLIENTS (C_ID, C_NAME, C_CITY, C_ZIP)", ++clientID_MAX + ",'" + name + "','" + city2 + "'," + zip);
                         //update ClientID
                         clientID = getClientID(test, name, city2);
-                        System.out.println("clientID2 : " + clientID);
                     }
 
                     //Check Type in table
@@ -83,7 +82,7 @@ public class jdbc_main {
                         //display agents of city and list policies
                         showAgentsPolicies(test, city2, policy_type);
                     } else {
-                        System.out.println("TYPE of policy not found. Returning")
+                        System.out.println("TYPE of policy not found. Returning");
                         break;
                     }
                     //Purchase
@@ -96,13 +95,13 @@ public class jdbc_main {
                     String agentID = sc.nextLine();
                     
                     //CLIENT ID NEEDS TO BE INSERTED
-                    insert("POLICIES_SOLD", agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
+                    insert("POLICIES_SOLD (PURCHASE_ID, AGENT_ID, CLIENT_ID, POLICY_ID, DATE_PURCHASED, AMOUNT)", ++purchaseID_MAX + "," + agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
 
                     break;
                 case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
-                    showPoliciesSold(test);
+                    //showPoliciesSold(test);
                     System.out.println("Enter the purchase ID of the policy you wish to cancel:");
                     String purchase_id = sc.nextLine();
                     cancelPolicy(purchase_id);
@@ -117,7 +116,7 @@ public class jdbc_main {
                     String a_city = sc.nextLine();
                     System.out.print("Agent's zip: ");
                     String a_zip = sc.nextLine();
-                    addAgent(test, a_id, a_name, a_city, a_zip);
+                    //addAgent(test, a_id, a_name, a_city, a_zip);
                     break;
                 case "6":
                     break scan;
@@ -165,20 +164,34 @@ public class jdbc_main {
 
         ResultSet check = statement.executeQuery(find);
         //Go to first row of table
-        check.first();
+        boolean isValid = check.first();
 
         //Find the ClientID, if in the table use it
         // if not in the table make a new one using the global variable
+        if(isValid){
+            return check.getInt("C_ID");
+        } else {
+            return -1;
+        }
     }
 
-    public static int getMaxClientID(jdbc_main jd) {
+    public static int getMaxClientID() throws SQLException{
         int max=0;
-        ResultSet rs = test.executeQuery("SELECT C_ID FROM CLIENTS");
+        ResultSet rs = statement.executeQuery("SELECT C_ID FROM CLIENTS");
         while (rs.next()) {
             int current = rs.getInt("C_ID");
             if (current>max) max=current;
         }
+        return max;
+    }
 
+    public static int getMaxPurchaseID() throws SQLException{
+        int max=0;
+        ResultSet rs = statement.executeQuery("SELECT PURCHASE_ID FROM POLICIES_SOLD");
+        while (rs.next()) {
+            int current = rs.getInt("PURCHASE_ID");
+            if (current>max) max=current;
+        }
         return max;
     }
 
@@ -300,5 +313,7 @@ public class jdbc_main {
     // Assumes that the tables are already created
     public void initDatabase(String Username, String Password, String SchemaName) throws SQLException {
         statement = connection.createStatement();
+        clientID_MAX = getMaxClientID();
+        purchaseID_MAX = getMaxPurchaseID();
     }
 }
