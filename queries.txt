@@ -52,3 +52,20 @@ if the above query has contents, then proceed
 	INNER JOIN POLICIES_SOLD ON AGENTS.A_ID = POLICIES_SOLD.AGENT_ID
 	INNER JOIN POLICY ON POLICIES_SOLD.POLICY_ID = POLICY.POLICY_ID
 	WHERE AGENTS.A_NAME = 'ANDREW';
+
+4.
+SELECT *
+FROM POLICIES_SOLD;
+
+need purchase_id
+
+DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID=purchase_id;
+
+5.
+need a_id, a_name, a_city, a_zip
+
+INSERT INTO AGENTS VALUES ( [a_id], '[a_name]', '[a_city]', [a_zip]);
+
+SELECT *
+FROM AGENTS
+WHERE A_CITY='[a_city]';
