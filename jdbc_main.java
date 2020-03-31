@@ -4,8 +4,8 @@ import java.util.Scanner;
 public class jdbc_main {
 
     // The instance variables for the class
-    private Connection connection;
-    private Statement statement;
+    private static Connection connection;
+    private static Statement statement;
 
     // The constructor for the class
     public jdbc_main() {
@@ -26,9 +26,7 @@ public class jdbc_main {
         Scanner sc = new Scanner(System.in);
 
         scan: while (true) {
-            String input = sc.nextLine();
-
-            //Show GUI
+            // Show GUI
             System.out.println("Input a number corrosponding to the functionality to be used.");
             System.out.println("1) Find all existing agents in a given city");
             System.out.println("2) Purchase an available policy from a particular agent");
@@ -37,10 +35,51 @@ public class jdbc_main {
             System.out.println("5) Add a new agent for a city");
             System.out.println("6) Quit");
 
-            switch(input){
+            // Get input
+            String input = sc.nextLine();
+
+            // Switch
+            switch (input) {
                 case "1":
+                    System.out.println("Please input a city to search for");
+                    String city1 = sc.nextLine();
+                    getAgentClient(test, city1);
                     break;
                 case "2":
+                    //UNIQUE CLIENTS
+                    System.out.println("Enter the following variables:");
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("City: ");
+                    String city2 = sc.nextLine();
+                    System.out.print("Zip: ");
+                    String zip = sc.nextLine();
+                    //Inserts into Clients
+                    insert("CLIENTS", name + "," + city2 + "," + zip);
+                    //Check Type in table
+                    System.out.print("Enter a type of policy: ");
+                    String policy_type = sc.nextLine();
+                    String queryCheck = "SELECT * FROM POLICY WHERE TYPE = '" + policy_type.toUpperCase() + "'";
+                    ResultSet check = statement.executeQuery(queryCheck);
+                    String is_type = check.getString("TYPE");
+                    if(is_type == null){
+                        System.out.print("Type not found, Exiting");
+                        break;
+                    }
+                    //display agents of city and list policies
+                    showAgentsPolicies(test, city2, policy_type);
+                    //Purchase
+                    System.out.println("Enter the following variables for your purchase:");
+                    System.out.print("Policy_ID: ");
+                    String policyID = sc.nextLine();
+                    System.out.print("Amount: ");
+                    String amount = sc.nextLine();
+                    System.out.print("Agent_ID: ");
+                    String agentID = sc.nextLine();
+                    
+                    //CLIENT ID NEEDS TO BE INSERTED
+                    insert("POLICIES_SOLD", agentID + "," + clientID + "," + policyID + ",CURDATE()," + amount);
+
                     break;
                 case "3":
                     break;
@@ -56,8 +95,50 @@ public class jdbc_main {
 
         }
 
+        sc.close();
         test.disConnect();
     }
+
+    // Case 1
+    // Find all Agents and Clients in City
+    // Variables: City
+    public static void getAgentClient(jdbc_main jd, String city) {
+        String agents = "SELECT * " + "FROM AGENTS " + "WHERE A_CITY = " + "\'" + city.toUpperCase() + "\'";
+        String clients = "SELECT * " + "FROM CLIENTS " + "WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
+        System.out.println("-------------AGENTS-------------");
+        jd.query(agents);
+        System.out.println("-------------CLIENTS-------------");
+        jd.query(clients);
+    }
+
+    // Case 2
+    // Purchase an available policy from a particular agent
+    // Variables:
+    public static void showAgentsPolicies(jdbc_main jd, String city, String type){
+        //Agents
+        String agents = "SELECT * FROM AGENTS WHERE A_CITY = '" + city.toUpperCase() + "'";
+        System.out.println("-------------AGENTS-------------");
+        jd.query(agents);
+        //Policies
+        String policies = "SELECT * FROM POLICY WHERE TYPE = '" + type.toUpperCase() + "'";
+        System.out.println("-------------POLICIES-------------");
+        jd.query(policies);
+    }
+    public static void buyPolicy(jdbc_main jd, ) {
+
+    }
+
+    // Case 3
+    // List all policies sold by a particular agent
+    // Variables
+
+    // Case 4
+    // Cancel a policy
+    // Variables:
+
+    // Case 5
+    // Add a new agent for a city
+    // Variables:
 
     // Connect to the database
     public void connect(String Username, String mysqlPassword) throws SQLException {
@@ -83,7 +164,6 @@ public class jdbc_main {
     public void query(String q) {
         try {
             ResultSet resultSet = statement.executeQuery(q);
-            System.out.println("\n---------------------------------");
             System.out.println("Query: \n" + q + "\n\nResult: ");
             print(resultSet);
         } catch (SQLException e) {
@@ -123,10 +203,11 @@ public class jdbc_main {
             }
             System.out.println("");
         }
+        System.out.println("");
     }
 
     // Insert into any table, any values from data passed in as String parameters
-    public void insert(String table, String values) {
+    public static void insert(String table, String values) {
         String query = "INSERT into " + table + " values (" + values + ")";
         try {
             statement.executeUpdate(query);
