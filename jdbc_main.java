@@ -103,13 +103,27 @@ public class jdbc_main {
                 case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
+                    showPoliciesSold(test);
+                    System.out.println("Enter the purchase ID of the policy you wish to cancel:");
+                    String purchase_id = sc.nextLine();
+                    cancelPolicy(test, purchase_id);
                     break;
-                case "5":
+                case "5": //Prompt the user for the (A_ID, A_NAME, A_CITY, A_ZIP) of the new agent.
+                    System.out.println("Please enter the necessary information for the new agent:");
+                    System.out.print("Agent ID: ");
+                    String a_id = sc.nextLine();
+                    System.out.print("Agent's name: ");
+                    String a_name = sc.nextLine();
+                    System.out.print("Agent's city: ");
+                    String a_city = sc.nextLine();
+                    System.out.print("Agent's zip: ");
+                    String a_zip = sc.nextLine();
+                    addAgent(test, a_id, a_name, a_city, a_zip);
                     break;
                 case "6":
                     break scan;
                 default:
-                    System.out.println("You put an invalid character, returning to menu.");
+                    System.out.println("You entered an invalid character, returning to menu.");
             }
 
         }
@@ -120,7 +134,7 @@ public class jdbc_main {
 
     // Case 1
     // Find all Agents and Clients in City
-    // Variables: City
+    // Variables: city
     public static void getAgentClient(jdbc_main jd, String city) {
         String agents = "SELECT * FROM AGENTS WHERE A_CITY = " + "\'" + city.toUpperCase() + "\'";
         String clients = "SELECT * FROM CLIENTS WHERE C_CITY = " + "\'" + city.toUpperCase() + "\'";
@@ -132,7 +146,8 @@ public class jdbc_main {
 
     // Case 2
     // Purchase an available policy from a particular agent
-    // Variables:
+    // Variables: city, type, 
+    //            name, city
     public static void showAgentsPolicies(jdbc_main jd, String city, String type){
         //Agents
         String agents = "SELECT * FROM AGENTS WHERE A_CITY = '" + city.toUpperCase() + "'";
@@ -143,7 +158,7 @@ public class jdbc_main {
         System.out.println("-------------POLICIES-------------");
         jd.query(policies);
     }
-
+  
     public static int getClientID(jdbc_main jd, String name, String city) throws SQLException{
         //Will return -1 if not found
         String find = "SELECT * FROM CLIENTS WHERE C_CITY = '" + city.toUpperCase() + "' AND C_NAME = '" + name.toUpperCase() + "'";
@@ -163,11 +178,29 @@ public class jdbc_main {
 
     // Case 4
     // Cancel a policy
-    // Variables:
+    // Variables: none, 
+    //            purchase_id
+    public static void showPoliciesSold(jdbc_main jd) {
+        System.out.println("-----------POLICIES SOLD-----------");
+        jd.query(" SELECT * FROM POLICIES_SOLD");
+    }
+    public static void cancelPolicy(jdbc_main jd, String purchase_id) {
+        String del = "DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID="+purchase_id+";"
+        jd.exeuteUpdate(del);
+        System.out.println("Policy " + purchase_id + " has been cancelled.");
+    }
+
 
     // Case 5
-    // Add a new agent for a city
-    // Variables:
+    // Add a new agent with given info, then show other agents in that city
+    // Variables: a_id, a_name, a_city, a_zip
+    public static void addAgent() {
+        String add = "INSERT INTO AGENTS VALUES ( " + a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip + ");"
+        jd.exeuteUpdate(add);
+        System.out.println("Agent " + a_id + " has been added.");
+        jd.query("SELECT * FROM AGENTS WHERE A_CITY='" + a_city + "';");
+    }
+
 
     // Connect to the database
     public void connect(String Username, String mysqlPassword) throws SQLException {
