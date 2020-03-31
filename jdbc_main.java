@@ -2,7 +2,6 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class jdbc_main {
-
     // The instance variables for the class
     private static Connection connection;
     private static Statement statement;
@@ -170,6 +169,17 @@ public class jdbc_main {
 
         //Find the ClientID, if in the table use it
         // if not in the table make a new one using the global variable
+    }
+
+    public static int getMaxClientID(jdbc_main jd) {
+        int max=0;
+        ResultSet rs = test.executeQuery("SELECT C_ID FROM CLIENTS");
+        while (rs.next()) {
+            int current = rs.getInt("C_ID");
+            if (current>max) max=current;
+        }
+
+        return max;
     }
 
     // Case 3
