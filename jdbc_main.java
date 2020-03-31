@@ -94,6 +94,10 @@ public class jdbc_main {
                 case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
+                    showPoliciesSold(test);
+                    System.out.println("Enter the purchase ID of the policy you wish to cancel:");
+                    String purchase_id = sc.nextLine();
+                    cancelPolicy(test, purchase_id);
                     break;
                 case "5":
                     break;
@@ -134,7 +138,7 @@ public class jdbc_main {
         System.out.println("-------------POLICIES-------------");
         jd.query(policies);
     }
-
+  
     public static int getClientID(jdbc_main jd, String name, String city) throws SQLException{
         //Will return -1 if not found
         String find = "SELECT * FROM CLIENTS WHERE C_CITY = '" + city.toUpperCase() + "' AND C_NAME = '" + name.toUpperCase() + "'";
@@ -153,7 +157,17 @@ public class jdbc_main {
 
     // Case 4
     // Cancel a policy
-    // Variables:
+    // Variables: none
+    public static void showPoliciesSold(jdbc_main jd) {
+        System.out.println("-----------POLICIES SOLD-----------");
+        jd.query(" SELECT * FROM POLICIES_SOLD");
+    }
+    public static void cancelPolicy(jdbc_main jd, String purchase_id) {
+        String del = "DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID="+purchase_id+";"
+        jd.exeuteUpdate(del);
+        System.out.println("Policy " + purchase_id + " has been cancelled.");
+    }
+
 
     // Case 5
     // Add a new agent for a city
