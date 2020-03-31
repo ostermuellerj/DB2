@@ -15,5 +15,13 @@ INSERT INTO CLIENTS (C_NAME, C_CITY, C_ZIP)
 VALUES ( '[name]', '[city]', [zip] );
 
 need type
+SELECT * FROM POLICY
+WHERE TYPE = '[type];
 
-need policy_id and amount
+if result != "Empty set" then
+	
+	(query for: display the available agent of clientâ€™s city, then list all available policy)
+
+	need policy_id and amount
+
+	(query for: Add the PURCHASE_ID, AGENT_ID, CLIENT_ID, POLICY_ID, DATA_PURCHASED and AMOUNT POLICIES_SOLD table.)
