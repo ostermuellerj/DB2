@@ -1,7 +1,19 @@
+1.
+need city 
+
 SELECT *
 FROM AGENTS
-WHERE A_CITY = "DALLAS";
+WHERE A_CITY = "[city]";
 
 SELECT *
 FROM CLIENTS
-WHERE C_CITY = "DALLAS";
+WHERE C_CITY = "[city]";
+
+2.
+need name, city, zip
+INSERT INTO CLIENTS (C_NAME, C_CITY, C_ZIP)
+VALUES ( '[name]', '[city]', [zip] );
+
+need type
+
+need policy_id and amount

@@ -38,11 +38,11 @@ public class jdbc_main {
             System.out.println("6) Quit");
 
             switch(input){
-                case "1":
+                case "1": //find all agents and clients in a given city
                     break;
-                case "2":
+                case "2": //add a new client, then purchase an available policy from a particular agent
                     break;
-                case "3":
+                case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
                     break;
