@@ -93,22 +93,22 @@ public class jdbc_main {
                 case "3": //list all policies sold by a particular agent 
                     break;
                 case "4":
-                    showPoliciesSold(test);
-                    System.out.println("Enter the purchase ID of the policy you wish to cancel:");
-                    String purchase_id = sc.nextLine();
-                    cancelPolicy(test, purchase_id);
+                    // showPoliciesSold(test);
+                    // System.out.println("Enter the purchase ID of the policy you wish to cancel:");
+                    // String purchase_id = sc.nextLine();
+                    // cancelPolicy(test, purchase_id);
                     break;
                 case "5": //Prompt the user for the (A_ID, A_NAME, A_CITY, A_ZIP) of the new agent.
-                    System.out.println("Please enter the necessary information for the new agent:");
-                    System.out.print("Agent ID: ");
-                    String a_id = sc.nextLine();
-                    System.out.print("Agent's name: ");
-                    String a_name = sc.nextLine();
-                    System.out.print("Agent's city: ");
-                    String a_city = sc.nextLine();
-                    System.out.print("Agent's zip: ");
-                    String a_zip = sc.nextLine();
-                    addAgent(test, a_id, a_name, a_city, a_zip);
+                    // System.out.println("Please enter the necessary information for the new agent:");
+                    // System.out.print("Agent ID: ");
+                    // String a_id = sc.nextLine();
+                    // System.out.print("Agent's name: ");
+                    // String a_name = sc.nextLine();
+                    // System.out.print("Agent's city: ");
+                    // String a_city = sc.nextLine();
+                    // System.out.print("Agent's zip: ");
+                    // String a_zip = sc.nextLine();
+                    // addAgent(test, a_id, a_name, a_city, a_zip);
                     break;
                 case "6":
                     break scan;
@@ -182,11 +182,15 @@ public class jdbc_main {
     //            purchase_id
     public static void showPoliciesSold(jdbc_main jd) {
         System.out.println("-----------POLICIES SOLD-----------");
-        jd.query(" SELECT * FROM POLICIES_SOLD");
+        jd.query("SELECT * FROM POLICIES_SOLD");
     }
     public static void cancelPolicy(jdbc_main jd, String purchase_id) {
-        String del = "DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID="+purchase_id+";"
-        jd.exeuteUpdate(del);
+        String del = "DELETE FROM POLICEIS_SOLD WHERE PURCHASE_ID="+purchase_id;
+        try {
+            statement.executeUpdate(del);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         System.out.println("Policy " + purchase_id + " has been cancelled.");
     }
 
@@ -195,25 +199,29 @@ public class jdbc_main {
     // Add a new agent with given info, then show other agents in that city
     // Variables: a_id, a_name, a_city, a_zip
     public static void addAgent() {
-        String add = "INSERT INTO AGENTS VALUES ( " + a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip + ");"
-        jd.exeuteUpdate(add);
-        System.out.println("Agent " + a_id + " has been added.");
-        jd.query("SELECT * FROM AGENTS WHERE A_CITY='" + a_city + "';");
-    }
-
-
-    // Connect to the database
-    public void connect(String Username, String mysqlPassword) throws SQLException {
+        String add = "INSERT INTO AGENTS VALUES ( " + a_id + ", '" + a_name + "', '" + a_city + "', " + a_zip + ")";
         try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost/" + Username + "?" + "user=" + Username + "&password=" + mysqlPassword);
-            // connection = DriverManager.getConnection("jdbc:mysql://localhost/" + Username
-            // +
-            // "?user=" + Username + "&password=" + mysqlPassword);
-        } catch (Exception e) {
-            throw e;
+            statement.executeUpdate(add);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        System.out.println("Agent " + a_id + " has been added.");
+        jd.query("SELECT * FROM AGENTS WHERE A_CITY='" + a_city + "'");
     }
+
+
+    // // Connect to the database
+    // public void connect(String Username, String mysqlPassword) throws SQLException {
+    //     try {
+    //         connection = DriverManager.getConnection(
+    //                 "jdbc:mysql://localhost/" + Username + "?" + "user=" + Username + "&password=" + mysqlPassword);
+    //         // connection = DriverManager.getConnection("jdbc:mysql://localhost/" + Username
+    //         // +
+    //         // "?user=" + Username + "&password=" + mysqlPassword);
+    //     } catch (Exception e) {
+    //         throw e;
+    //     }
+    // }
 
     // Disconnect from the database
     public void disConnect() throws SQLException {
