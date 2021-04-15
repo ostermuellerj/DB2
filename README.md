@@ -1,2 +1,2 @@
-# d-b-2
-homework 4
+# DB Homework 4: Interacting with Database via JDBC
+
