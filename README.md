@@ -1,2 +1,1 @@
-# DB Homework 4: Interacting with Database via JDBC
-
+# A simple database interface in Java (JDBC, MySQL).
