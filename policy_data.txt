@@ -1,7 +1,3 @@
-
-Data to be entered in the tables, 
-
-
 CLIENT
 
 |  101 | CHRIS  | DALLAS       | 43214 |
