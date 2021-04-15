@@ -1,8 +1,8 @@
 # A simple database interface in Java (JDBC, MySQL).
 
-The database describes the operations of an insurance company. The schema contains tables for Clients, Agents, Policies, and Policies Sold. Agents have several corresponding Clients, Clients have corresponding Policies.
+A database that emulates the operations of an insurance company. The DB's schema contains tables for Clients, Agents, Policies, and Policies Sold. Agents have several corresponding Clients, Clients have corresponding Policies.
 
-The data for populating the database is from `policy_data.txt`, and the SQL schema for implementing these tables is in `schema.txt`.
+Data for populating the DB is from `policy_data.txt`, and the SQL schema for implementing these tables is in `schema.txt`.
 
 ![Policy data](policy_data.png)
 
